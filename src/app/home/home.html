@@ -1,0 +1,79 @@
+<div class="container">
+  <!-- Formulario Card -->
+  <div class="form-card">
+    <h2>Generar Turnos</h2>
+    <form (ngSubmit)="generarTurnos()" #turnosForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fechaInicio">Fecha Inicio:</label>
+          <input 
+            type="date" 
+            id="fechaInicio" 
+            name="fechaInicio"
+            [(ngModel)]="formData.fechaInicio"
+            required
+            class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label for="fechaFin">Fecha Fin:</label>
+          <input 
+            type="date" 
+            id="fechaFin" 
+            name="fechaFin"
+            [(ngModel)]="formData.fechaFin"
+            required
+            class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label for="servicio">Servicio:</label>
+          <select 
+            id="servicio" 
+            name="servicio"
+            [(ngModel)]="formData.servicio"
+            required
+            class="form-control">
+            <option value="">Seleccionar servicio</option>
+            <option *ngFor="let s of services" [value]="s.id">{{ s.nameService }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <button type="submit" class="btn-generar" [disabled]="!turnosForm.valid">
+            Generar Turnos
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de Turnos -->
+  <div class="table-card" *ngIf="shifts$ | async; else loading">
+    <h3>Turnos Generados ({{ (shifts$ | async)?.length }})</h3>
+    <div class="table-container">
+      <table class="turnos-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sh of shifts$ | async">
+            <td>{{ sh.shiftDate }}</td>
+            <td>{{ sh.startTime }}</td>
+            <td>{{ sh.endTime }}</td>
+            <td>{{ sh.state ? 'Disponible' : 'No disponible' }}</td>
+          </tr>
+          <tr *ngIf="!(shifts$ | async)">
+            <td colspan="4" class="no-data">Cargando turnos...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> 
+  <ng-template #loading>Genera los turnos para ver los resultados...</ng-template>
+</div>
